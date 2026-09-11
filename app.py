@@ -9,7 +9,7 @@ account = PaperAccount(10000)
 
 @app.get("/", response_class=HTMLResponse)
 def home():
-    return HTMLResponse(open("dashboard/index.html", encoding="utf-8").read())
+    return HTMLResponse(open("index.html").read())
 
 @app.get("/api/signal")
 def signal():
