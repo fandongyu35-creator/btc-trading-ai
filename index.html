@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BTC Trading AI V1</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:700px;margin:auto;padding:18px;background:#111;color:#eee}
+.card{background:#1d1d1d;border-radius:14px;padding:16px;margin:12px 0}
+.big{font-size:30px;font-weight:700}.muted{color:#aaa}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{padding:12px 18px;border:0;border-radius:10px;font-weight:bold}
+</style>
+</head>
+<body>
+<h1>BTC Trading AI</h1>
+<div class="card"><div class="muted">BTC/USDT</div><div id="price" class="big">加载中...</div></div>
+<div class="card"><div id="direction" class="big">分析中...</div><p id="detail"></p></div>
+<div class="card grid">
+<div>EMA20<br><b id="e20">-</b></div>
+<div>EMA50<br><b id="e50">-</b></div>
+<div>EMA200<br><b id="e200">-</b></div>
+<div>RSI<br><b id="rsi">-</b></div>
+</div>
+<div class="card">
+<p>入场：<span id="entry">-</span></p>
+<p>止损：<span id="sl">-</span></p>
+<p>TP1：<span id="tp1">-</span></p>
+<p>TP2：<span id="tp2">-</span></p>
+<p>R:R：<span id="rr">-</span></p>
+<p class="muted" id="warning"></p>
+</div>
+<button onclick="load()">刷新分析</button>
+<script>
+async function load(){
+ const r=await fetch('/api/signal'); const x=await r.json();
+ price.textContent='$'+x.price;
+ direction.textContent=x.direction+'  |  '+x.grade+'级';
+ detail.textContent='置信度：'+(x.confidence*100).toFixed(0)+'%';
+ e20.textContent=x.ema20;e50.textContent=x.ema50;e200.textContent=x.ema200;rsi.textContent=x.rsi;
+ entry.textContent=x.entry_low&&x.entry_high?x.entry_low+' - '+x.entry_high:'-';
+ sl.textContent=x.stop_loss??'-';tp1.textContent=x.tp1??'-';tp2.textContent=x.tp2??'-';rr.textContent=x.risk_reward;
+ warning.textContent=x.warning;
+}
+load(); setInterval(load,60000);
+</script>
+</body></html>
