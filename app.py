@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from data.market_data import fetch_klines
-from strategy.signal_engine import analyze
-from trading.paper_trading import PaperAccount
+from market_data import fetch_klines
+from signal_engine import analyze
+from paper_trading import PaperAccount
 
 app = FastAPI(title="BTC Trading AI V1")
 account = PaperAccount(10000)
