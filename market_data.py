@@ -1,16 +1,39 @@
 import requests
 import pandas as pd
 
-URL = "https://api.binance.com/api/v3/klines"
 
-def fetch_klines(symbol="BTCUSDT", interval="1h", limit=250):
-    r = requests.get(URL, params={"symbol":symbol,"interval":interval,"limit":limit}, timeout=10)
+URL = "https://www.okx.com/api/v5/market/candles"
+
+
+def fetch_klines(symbol="BTC-USDT", interval="1H", limit=250):
+
+    params = {
+        "instId": symbol,
+        "bar": interval,
+        "limit": limit
+    }
+
+    r = requests.get(URL, params=params)
     r.raise_for_status()
-    raw = r.json()
-    df = pd.DataFrame(raw, columns=[
-        "time","open","high","low","close","volume","close_time",
-        "quote_volume","trades","taker_buy_base","taker_buy_quote","ignore"
-    ])
+
+    raw = r.json()["data"]
+
+    df = pd.DataFrame(
+        raw,
+        columns=[
+            "time",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "volCcy",
+            "volCcyQuote",
+            "confirm"
+        ]
+    )
+
     for c in ["open","high","low","close","volume"]:
         df[c] = pd.to_numeric(df[c])
+
     return df
